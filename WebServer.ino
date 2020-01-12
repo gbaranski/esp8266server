@@ -3,7 +3,7 @@ auto timer = timer_create_default(); // create a timer with default settings
 
 #include <ESP8266WiFi.h>
 const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* password = "PASS";
 
 WiFiServer server(80);
 
@@ -125,13 +125,13 @@ HTTP/1.1 200 OK
 Content-Type: text/html
 
   <!DOCTYPE html>
+  <title>ESP8266 Water mixer</title>
   <html>
     <head>
       <meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/>
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
       <script>
 setInterval(loadDoc, 1000);
-
 function loadDoc() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
