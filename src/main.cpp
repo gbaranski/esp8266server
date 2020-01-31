@@ -2,8 +2,8 @@
 auto timer = timer_create_default(); // create a timer with default settings
 
 #include <ESP8266WiFi.h>
-const char* ssid = "Nigeria";
-const char* password = "hondamsx125";
+const char* ssid = "YOUR_SSID";
+const char* password = "YOUR_PASSWORD";
 
 WiFiServer server(80);
 
