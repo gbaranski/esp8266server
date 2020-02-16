@@ -2,47 +2,50 @@
 auto timer = timer_create_default(); // create a timer with default settings
 
 #include <ESP8266WiFi.h>
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
+const char *ssid = "Nigeria";
+const char *password = "hondamsx125";
 
 WiFiServer server(80);
 
 int totalseconds = 600; // 10 mins
 int displayseconds = 0; // seconds with formatting
 
-bool TimerON = false; // Timer on/off
+bool timerOn = false; // Timer on/off
 
 int displayminutes = 0; // Minutes with formatting
 
 int outputPin = 14; // Output D5
 
-bool timer1(void *) { // Timer function
- 
+bool timer1(void *)
+{ // Timer function
+
   totalseconds--; // Sets totalseconds(without formatting) to totalseconds - 1
- 
-  displayseconds = totalseconds%60;         // Formats the totalseconds to displayseconds
-  displayminutes = totalseconds/60;         // Formats the totalseconds to displayminutes
-  
-  if(displayseconds==0){ // Change displayseconds to 60 when arrive 0
-   if(totalseconds>0) {
-   displayseconds = 60;
-}
+
+  displayseconds = totalseconds % 60; // Formats the totalseconds to displayseconds
+  displayminutes = totalseconds / 60; // Formats the totalseconds to displayminutes
+
+  if (displayseconds == 0)
+  { // Change displayseconds to 60 when arrive 0
+    if (totalseconds > 0)
+    {
+      displayseconds = 60;
+    }
   }
-  if(totalseconds==0){ // Prevents timer going into negative after totalseconds arriving 0
-   TimerON = false;
-}  
-  
+  if (totalseconds == 0)
+  { // Prevents timer going into negative after totalseconds arriving 0
+    timerOn = false;
+  }
+
   return true; // keep timer active? true
 }
 
-void setup() {
-  Serial.begin(115200); 
-  
-  
-  pinMode(outputPin, OUTPUT); // Sets LED pin(D0) as a output
+void setup()
+{
+  Serial.begin(115200);
+
+  pinMode(outputPin, OUTPUT);   // Sets LED pin(D0) as a output
   digitalWrite(outputPin, LOW); // Sets LED OFF
-  
-  
+
   Serial.print("Connecting to the Newtork");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
@@ -50,69 +53,71 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("WiFi connected");  
-  server.begin();  // Starts the Server
+  Serial.println("WiFi connected");
+  server.begin(); // Starts the Server
   Serial.println("Server started");
- 
+
   Serial.print("IP Address of network: "); // Prints IP address on Serial Monitor
   Serial.println(WiFi.localIP());
 
   timer.every(1000, timer1); // Calls the timer1 function every 1000ms(1s)
 }
 
-void StartTimer() {
-    digitalWrite(outputPin, HIGH); // Turn ON LED
-    Serial.println("Timer started");
-    TimerON = true; // Set timer to active
-    totalseconds = 600; // Set totalseconds to 600 to start over
-    delay(500); // Make LED blink for 10ms
-    digitalWrite(outputPin, LOW); // Turn OFF LED
+void StartTimer()
+{
+  digitalWrite(outputPin, HIGH); // Turn ON LED
+  Serial.println("Timer started");
+  timerOn = true;               // Set timer to active
+  totalseconds = 600;           // Set totalseconds to 600 to start over
+  delay(500);                   // Make LED blink for 10ms
+  digitalWrite(outputPin, LOW); // Turn OFF LED
 }
 
+void loop()
+{
 
-
-void loop() {
-  
-  if(TimerON == true) { // Checks if the Timer is ON, if ON then: 
-  timer.tick(); // tick the timer
+  if (timerOn == true)
+  {               // Checks if the Timer is ON, if ON then:
+    timer.tick(); // tick the timer
   }
-  
+
   WiFiClient client = server.available(); // If client is connected then return checking it again, if not connected then print "Waiting for new client"
   if (!client)
   {
     return;
   }
 
-
-  Serial.println(TimerON);
+  Serial.println(timerOn);
 
   String request = client.readStringUntil('\r'); // Reads request from client, for example reads that client clicked button
   Serial.println(request);
   client.flush();
 
-  if(request.indexOf("/startTimer") != -1) // If the request is turning the LED on then:
+  if (request.indexOf("/startTimer") != -1) // If the request is turning the LED on then:
   {
     StartTimer();
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
     client.println("");
-    client.println("OK"); 
+    client.println("OK");
     return;
-  }else if(request.indexOf("/getRemainingTime") != -1){
+  }
+  else if (request.indexOf("/getRemainingTime") != -1)
+  {
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: application/json");
     client.println("");
-    client.println("{"); 
-    client.print("\"displayMinutes\": "); 
-    client.print(displayminutes); 
-    client.println(","); 
-    client.print("\"displaySeconds\": "); 
-    client.println(displayseconds); 
-    client.println("}"); 
+    client.println("{");
+    client.print("\"displayMinutes\": ");
+    client.print(displayminutes);
+    client.println(",");
+    client.print("\"displaySeconds\": ");
+    client.println(displayseconds);
+    client.println("}");
     return;
   }
- 
-/*------------------HTML Page Creation---------------------*/
+
+  /*------------------HTML Page Creation---------------------*/
 
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
