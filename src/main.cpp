@@ -26,7 +26,7 @@ void handleStartMixing()
 {
   digitalWrite(RELAYPIN, 1);
   isTimerOn = true;
-  remainingSeconds = 60;
+  remainingSeconds = 600;
   server.send(200, "text/plain", "OK");
   
 }
@@ -89,7 +89,7 @@ void loop()
   {
     if (millis() - previousMillis >= 1000) {
       previousMillis = millis();
-      if(remainingSeconds == 59) {
+      if(remainingSeconds == 599) {
         digitalWrite(RELAYPIN, 0);
       }
       handleTimer();
