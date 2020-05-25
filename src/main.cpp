@@ -28,13 +28,13 @@ void handleStartMixing()
   isTimerOn = true;
   remainingSeconds = 600;
   server.send(200, "text/plain", "OK");
-  
 }
-void handleGetESPData() {
+void handleGetESPData()
+{
   const String JSON =
-    R"({"remainingSeconds":")" + String(remainingSeconds) +
-    R"(","isTimerOn":")" + String(isTimerOn) +
-    "\"}";
+      R"({"remainingSeconds":)" + String(remainingSeconds) +
+      R"(,"isTimerOn":)" + String(isTimerOn) +
+      "}";
   Serial.println(JSON);
   server.send(200, "application/json", JSON);
 }
@@ -87,13 +87,16 @@ void loop()
 
   if (isTimerOn)
   {
-    if (millis() - previousMillis >= 1000) {
+    if (millis() - previousMillis >= 1000)
+    {
       previousMillis = millis();
-      if(remainingSeconds == 599) {
+      if (remainingSeconds == 599)
+      {
         digitalWrite(RELAYPIN, 0);
       }
       handleTimer();
-      if(remainingSeconds == 0) {
+      if (remainingSeconds == 0)
+      {
         isTimerOn = false;
       }
     }
