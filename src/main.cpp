@@ -84,16 +84,15 @@ void loop()
 {
   server.handleClient();
   handleOTA();
-
+  if (remainingSeconds <= 599)
+  {
+    digitalWrite(RELAYPIN, 0);
+  }
   if (isTimerOn)
   {
     if (millis() - previousMillis >= 1000)
     {
       previousMillis = millis();
-      if (remainingSeconds == 599)
-      {
-        digitalWrite(RELAYPIN, 0);
-      }
       handleTimer();
       if (remainingSeconds == 0)
       {
