@@ -3,7 +3,6 @@ void setupOTA()
 {
     ArduinoOTA.setPort(8266);
     ArduinoOTA.setHostname("Watermixer-ESP");
-    // ArduinoOTA.setPassword("hondamsx125");
     ArduinoOTA.onStart([]() {
         String type;
         if (ArduinoOTA.getCommand() == U_FLASH)
