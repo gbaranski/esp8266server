@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
+
 #ifndef OTA_H
 #define OTA_H
 #include "OTA.h"
@@ -27,13 +28,13 @@ void setup()
     Serial.println("Waiting for wifi...");
     delay(100);
   }
-  connectWebSocket();
   setupOTA();
+  connectWebSocket();
 }
 
 void loop()
 {
-  webSocketLoop();
   handleOTA();
+  webSocketLoop();
   handleTimer();
 }

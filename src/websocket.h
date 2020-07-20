@@ -15,11 +15,17 @@
 #include "io.h"
 #endif
 
+#ifndef OTA_H
+#define OTA_H
+#include "OTA.h"
+#endif
+
 #ifndef SECRET_H
 #define SECRET_H
 #include "secret.h"
 #endif
 
+// #include <WiFiClientSecureBearSSL.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <WebSocketsClient.h>
@@ -98,11 +104,16 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 
 String getToken()
 {
+    // std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+    // client->setFingerprint(fingerprint);
+    // http.begin(*client, TOKEN_SERVER_URL);
     http.begin(TOKEN_SERVER_URL);
     http.addHeader("device", "WATERMIXER");
     http.addHeader("token", WATERMIXER_TOKEN);
     http.addHeader("accept", "text/plain");
+    Serial.println("Attempt to retreive token");
     int httpCode = http.GET();
+    Serial.println("Code: " + httpCode);
     if (httpCode == 200)
     {
         String token = http.getString();
@@ -129,7 +140,6 @@ String getToken()
 
 void setupWebsocket()
 {
-
     Serial.setDebugOutput(true);
 
     Serial.println();
@@ -140,10 +150,11 @@ void setupWebsocket()
 }
 void connectWebSocket()
 {
-    for (uint8_t t = 2; t > 0; t--)
+    for (uint8_t t = 200; t > 0; t--)
     {
         Serial.printf("[WS] WAIT FOR CONNECT %d...\n", t);
-        delay(1000);
+        handleOTA();
+        delay(10);
     }
     webSocket.setExtraHeaders(("token: " + getToken()).c_str());
 
