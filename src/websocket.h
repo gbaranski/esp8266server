@@ -52,12 +52,10 @@ void handleMessage(uint8_t payload[], size_t length)
     {
         Serial.println("[WSc] Received START_MIXING");
         handleStartMixing();
-        webSocket.sendTXT("OK");
     }
     else if (payloadString == "RESTART")
     {
         Serial.println("[WSc] Rebooting");
-        webSocket.sendTXT("OK");
         ESP.restart();
     }
     else
