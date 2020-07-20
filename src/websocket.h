@@ -109,9 +109,7 @@ String getToken()
     http.addHeader("device", "WATERMIXER");
     http.addHeader("token", WATERMIXER_TOKEN);
     http.addHeader("accept", "text/plain");
-    Serial.println("Attempt to retreive token");
     int httpCode = http.GET();
-    Serial.println("Code: " + httpCode);
     if (httpCode == 200)
     {
         String token = http.getString();
